@@ -92,9 +92,12 @@ description: 專案初始化 — 為一個專案資料夾建立 AGENTS.md（專�
 - YYYY-MM-DD <電腦名稱>：初始化專案
 ```
 
-電腦名稱取得方式：
-- Windows（PowerShell）：`$env:COMPUTERNAME`
-- macOS：`scutil --get ComputerName`
+時間與電腦名稱**一定要實際執行指令取得**，不可以寫「待補」：
+
+| 要取得 | 指令（PowerShell、命令提示字元、macOS 終端機都能用） |
+|---|---|
+| 電腦名稱 | `hostname` |
+| 現在時間 | PowerShell：`Get-Date -Format "yyyy-MM-dd HH:mm"`；macOS／bash：`date "+%Y-%m-%d %H:%M"` |
 
 ## 5. 完成回報
 

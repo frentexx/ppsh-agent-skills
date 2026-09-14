@@ -67,7 +67,7 @@ npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh
 
 | Agent | 目的地（Windows） | 目的地（macOS） |
 |---|---|---|
-| Codex Desktop | `%USERPROFILE%\.codex\skills\` | `~/.codex/skills/` |
+| Codex Desktop | `%USERPROFILE%\.agents\skills\` | `~/.agents/skills/` |
 | Claude Code | `%USERPROFILE%\.claude\skills\` | `~/.claude/skills/` |
 
 3. 重新開啟 Agent

@@ -36,7 +36,7 @@ description: 收工 — 把這次做了什麼寫進 handoff.md（整份重寫）
 
 追加會越積越長，接手的人不知道看哪段。
 
-- **最後更新**：現在時間＋電腦名稱（Windows：`$env:COMPUTERNAME`；macOS：`scutil --get ComputerName`）
+- **最後更新**：現在時間＋電腦名稱，**一定要實際執行指令取得**，不可寫「待補」：電腦名稱用 `hostname`；時間用 PowerShell `Get-Date -Format "yyyy-MM-dd HH:mm"` 或 macOS／bash `date "+%Y-%m-%d %H:%M"`
 - **上次做到哪**：具體。寫「第 2 回學習單完成 1–8 題，卡在第 9 題的圖」，不要寫「處理了一些資料」
 - **下一步**：1–3 項，寫成**可以直接動手的動作**
 - **卡關／待決**：等人回覆、等老師決定的事；沒有就寫「無」

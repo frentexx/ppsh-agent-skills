@@ -26,10 +26,7 @@ description: 開工 — 讀專案的 AGENTS.md 與 handoff.md，30 秒內回報�
 
 ### 3. 檢查是不是換了電腦
 
-比對 `handoff.md` 的「最後更新」電腦名稱與目前這台：
-
-- Windows（PowerShell）：`$env:COMPUTERNAME`
-- macOS：`scutil --get ComputerName`
+比對 `handoff.md` 的「最後更新」電腦名稱與目前這台（執行 `hostname` 取得，Windows 與 macOS 都能用）。
 
 **不同台** → 明確說「上次是在 <某台> 做的」，並提醒：
 「請先確認 Google 雲端硬碟已同步完成（檔案總管或 Finder 裡的檔案圖示是綠色勾勾），不然讀到的可能是舊版。」
