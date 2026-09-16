@@ -2,7 +2,8 @@
 name: ppsh-soil-html-deck
 description: >
   HTML 簡報技能(自由度天花板)。用單一 HTML 檔案模擬簡報的呈現邏輯,
-  圖像由 Gemini 生圖模型生成並 base64 內嵌,排版/文字/互動全部由 HTML + CSS + JS 處理,
+  排版/文字/互動全部由 HTML + CSS + JS 處理,**不需要 API 金鑰**(沒有金鑰時視覺一律用向量 SVG,照樣產出完整簡報),
+  有 Gemini 付費金鑰時才可選用 AI 插圖,
   支援互動圖表(Chart.js)、可點擊表格、影片嵌入、RWD 跨裝置、一鍵分享 URL。
   當使用者說「做 HTML 簡報」、「網頁版簡報」、「互動式簡報」、「線上簡報」、
   「可分享連結的簡報」、「要有互動圖表的簡報」、「不受 PowerPoint 限制的簡報」、
