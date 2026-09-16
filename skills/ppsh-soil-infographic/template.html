@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>【標題】｜國立屏北高級中學</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+<style>
+:root{
+  /* 屏北高中懶人包標準色（要改主題只動這五行） */
+  --paper:#fbf7ee; --paper-2:#f4ecdd; --card:#fdfbf6;
+  --green:#3f5d47; --green-2:#5b7a63;
+  --red:#b03a1f;                       /* 主強調色，只此一種 */
+  --gold:#c2a15a;                      /* 輔強調色，只此一種 */
+  --ink:#33302b; --ink-2:#5f594f; --ink-3:#8c8377;
+  /* 間距一律 8 的倍數 */
+  --s1:64px; --s2:32px; --s3:24px; --s4:16px; --s5:8px;
+  --gap:24px; --radius:16px;
+}
+*{ box-sizing:border-box; margin:0; padding:0; }
+body{
+  /* 換版式改這兩個值即可，並用同尺寸餵 render.py --size */
+  width:1536px; height:1024px; overflow:hidden; position:relative;
+  background:linear-gradient(150deg,var(--paper) 0%,var(--paper-2) 100%);
+  font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;
+  color:var(--ink); line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 背景裝飾（純 SVG，不用 AI 生圖） ---------- */
+.deco{ position:absolute; inset:0; pointer-events:none; z-index:0; }
+.deco svg{ position:absolute; }
+.mtn{ right:0; top:0; width:880px; height:520px; opacity:.16; }
+.mtn-b{ left:0; bottom:0; width:1536px; height:280px; opacity:.13; }
+.weave-tl{ left:0; top:0; width:200px; height:200px; opacity:.75; }
+.weave-br{ right:0; bottom:0; width:240px; height:240px; opacity:.45; }
+.weave-tr{ right:56px; top:32px; width:240px; height:32px; opacity:.55; }
+/* ⚠️ 左下角不放裝飾——那是頁尾文字的位置，放了會壓住字 */
+
+.wrap{ position:relative; z-index:1; height:100%;
+       padding:var(--s1) var(--s1) var(--s2); display:flex; flex-direction:column; }
+
+/* ---------- 標題 ---------- */
+h1{ font-family:"Noto Serif TC","Noto Sans TC",serif; font-weight:900;
+    font-size:72px; line-height:1.12; color:var(--red); letter-spacing:.02em; }
+.sub{ font-size:21px; color:var(--ink-2); margin-top:var(--s4); font-weight:500; letter-spacing:.04em; }
+.sub b{ color:var(--green); font-weight:700; }
+
+/* ---------- 三大數字 ---------- */
+.stats{ display:grid; grid-template-columns:repeat(3,1fr); margin-top:var(--s2); }
+.stat{ display:flex; align-items:center; gap:var(--s3); padding:0 var(--s3); position:relative; }
+.stat + .stat::before{ content:""; position:absolute; left:0; top:8px; bottom:8px;
+  width:1px; background:linear-gradient(180deg,transparent,var(--gold),transparent); }
+.stat .ico{ width:72px; height:72px; border-radius:50%; flex:none;
+  background:rgba(194,161,90,.16); display:flex; align-items:center; justify-content:center; }
+.stat .n{ font-size:52px; font-weight:900; color:var(--red); line-height:1.05;
+  font-family:"Noto Serif TC",serif; }
+.stat .n small{ font-size:24px; font-weight:700; margin-left:2px; }
+.stat .cap{ font-size:17px; color:var(--ink-2); font-weight:500; margin-top:2px; }
+
+/* ---------- 卡片 ---------- */
+.cards{ display:grid; grid-template-columns:1fr 1fr; gap:var(--gap); margin-top:var(--s2); flex:1; }
+.card{ background:var(--card); border-radius:var(--radius);
+  box-shadow:0 2px 16px rgba(63,93,71,.08); padding:var(--s3);
+  display:grid; grid-template-columns:80px 1px 1fr; gap:var(--s3); align-items:start; }
+.card .badge-ico{ width:80px; height:80px; border-radius:50%;
+  background:rgba(63,93,71,.10); display:flex; align-items:center; justify-content:center; }
+.card .divider{ align-self:stretch; width:1px;
+  background:repeating-linear-gradient(180deg,var(--gold) 0 6px,transparent 6px 12px); opacity:.7; }
+.tag{ display:inline-block; background:var(--green); color:#fdfbf6;
+  font-size:17px; font-weight:700; letter-spacing:.14em;
+  padding:var(--s5) var(--s4); border-radius:var(--s5); }
+.card.alert .tag{ background:var(--red); }
+.card h3{ font-size:20px; font-weight:700; color:var(--ink); margin-top:var(--s4); }
+.card ul{ list-style:none; margin-top:var(--s5); }
+.card li{ font-size:19px; color:var(--ink-2); padding-left:var(--s4); position:relative;
+  margin-top:var(--s5); line-height:1.55; }
+.card li::before{ content:""; position:absolute; left:0; top:11px;
+  width:6px; height:6px; border-radius:50%; background:var(--gold); }
+.card li b{ color:var(--red); font-weight:700; }
+.card li i{ font-style:normal; color:var(--green); font-weight:700; }
+
+/* ---------- 流程條 ---------- */
+.flow{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s5); margin-top:var(--s3); }
+.flow span{ font-size:17px; color:var(--ink-2); background:rgba(63,93,71,.07);
+  padding:var(--s5) var(--s4); border-radius:var(--s5); font-weight:500; }
+.flow span.hot{ background:rgba(176,58,31,.10); color:var(--red); font-weight:700; }
+.flow em{ font-style:normal; color:var(--gold); font-weight:700; }
+
+/* ---------- 頁尾（z-index 高於裝飾，永遠讀得到） ---------- */
+.foot{ position:relative; z-index:2; display:flex; justify-content:space-between;
+  align-items:center; margin-top:var(--s3); font-size:16px; color:var(--ink-3);
+  padding-right:176px; }   /* 讓開右下角織紋，右側文字不與裝飾重疊 */
+.foot b{ color:var(--green); font-weight:700; }
+
+/* ---------- 螢幕限定 UI（?shot=1 時自動移除） ---------- */
+.ui-only{ position:fixed; right:var(--s3); top:var(--s3); z-index:9;
+  background:var(--green); color:#fdfbf6; border:0; border-radius:var(--s5);
+  padding:var(--s4) var(--s3); font-size:16px; font-weight:700;
+  font-family:inherit; cursor:pointer; box-shadow:0 2px 16px rgba(0,0,0,.18); }
+</style>
+</head>
+<body>
+
+<div class="deco">
+  <svg class="mtn" viewBox="0 0 880 520" fill="none">
+    <path d="M0 520 L180 250 L300 360 L470 130 L620 330 L760 200 L880 340 L880 520Z" fill="#3f5d47"/>
+    <path d="M300 520 L470 300 L600 400 L740 260 L880 400 L880 520Z" fill="#5b7a63" opacity=".7"/>
+  </svg>
+  <svg class="mtn-b" viewBox="0 0 1536 280" fill="none">
+    <path d="M0 280 L140 150 L280 220 L430 90 L600 200 L780 120 L960 210 L1140 110 L1320 200 L1440 140 L1536 190 L1536 280Z" fill="#3f5d47"/>
+  </svg>
+  <svg class="weave-tl" viewBox="0 0 200 200" fill="none">
+    <path d="M0 0 H200 V16 H16 V200 H0 Z" fill="#b03a1f" opacity=".8"/>
+    <g fill="#c2a15a">
+      <path d="M28 28 h20 v20 h-20z M60 28 h20 v20 h-20z M92 28 h20 v20 h-20z M124 28 h20 v20 h-20z M156 28 h20 v20 h-20z"/>
+      <path d="M28 60 h20 v20 h-20z M28 92 h20 v20 h-20z M28 124 h20 v20 h-20z M28 156 h20 v20 h-20z"/>
+    </g>
+    <g fill="#3f5d47" opacity=".85">
+      <path d="M38 38 l10 10 -10 10 -10 -10z M70 38 l10 10 -10 10 -10 -10z M102 38 l10 10 -10 10 -10 -10z"/>
+      <path d="M38 70 l10 10 -10 10 -10 -10z M38 102 l10 10 -10 10 -10 -10z"/>
+    </g>
+  </svg>
+  <svg class="weave-br" viewBox="0 0 280 280" fill="none">
+    <path d="M280 280 H80 V264 H264 V80 H280 Z" fill="#c2a15a" opacity=".85"/>
+    <path d="M280 240 H120 V224 H264 V120 H280 Z" fill="#b03a1f" opacity=".55"/>
+    <g fill="#3f5d47" opacity=".7">
+      <path d="M150 190 l14 14 -14 14 -14 -14z M196 190 l14 14 -14 14 -14 -14z M242 190 l14 14 -14 14 -14 -14z"/>
+      <path d="M196 144 l14 14 -14 14 -14 -14z M242 144 l14 14 -14 14 -14 -14z"/>
+      <path d="M242 98 l14 14 -14 14 -14 -14z"/>
+    </g>
+  </svg>
+  <svg class="weave-tr" viewBox="0 0 240 32" fill="none">
+    <g fill="#c2a15a"><path d="M8 16 l8 -8 8 8 -8 8z M40 16 l8 -8 8 8 -8 8z M72 16 l8 -8 8 8 -8 8z"/></g>
+    <g fill="#b03a1f" opacity=".8"><path d="M120 16 l8 -8 8 8 -8 8z M152 16 l8 -8 8 8 -8 8z"/></g>
+    <g fill="#3f5d47" opacity=".7"><path d="M192 16 l8 -8 8 8 -8 8z M224 16 l8 -8 8 8 -8 8z"/></g>
+  </svg>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <h1>【主標題，12 字內】</h1>
+    <p class="sub">國立屏北高級中學｜【單位】　<b>【一句話講完這張圖在說什麼】</b></p>
+  </header>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="ico">
+        <!-- 獎盃 -->
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b03a1f" stroke-width="2" stroke-linecap="round">
+          <path d="M7 4h10v5a5 5 0 01-10 0z"/><path d="M7 5.5H4.5v1A3.5 3.5 0 007.6 10M17 5.5h2.5v1A3.5 3.5 0 0116.4 10"/><path d="M12 14v3.5M8.5 20h7"/>
+        </svg>
+      </div>
+      <div><div class="n">【數字】<small>【單位】</small></div><div class="cap">【這個數字是什麼】</div></div>
+    </div>
+    <div class="stat">
+      <div class="ico">
+        <!-- 時鐘 -->
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b03a1f" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>
+        </svg>
+      </div>
+      <div><div class="n">【數字】<small>【單位】</small></div><div class="cap">【這個數字是什麼】</div></div>
+    </div>
+    <div class="stat">
+      <div class="ico">
+        <!-- 卡片 -->
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b03a1f" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M8 15h3"/>
+        </svg>
+      </div>
+      <div><div class="n">【數字】<small>【單位】</small></div><div class="cap">【這個數字是什麼】</div></div>
+    </div>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <div class="badge-ico">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3f5d47" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/>
+          <circle cx="17.5" cy="9.5" r="2.4"/><path d="M16 14.6c3 .3 5 2.4 5 5.4"/>
+        </svg>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <span class="tag">【標籤】</span>
+        <h3>【一句結論】</h3>
+        <ul><li>【重點】</li><li>【重點】</li><li>【重點】</li></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="badge-ico">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3f5d47" stroke-width="1.8" stroke-linecap="round">
+          <rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/>
+        </svg>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <span class="tag">【標籤】</span>
+        <h3>【一句結論】</h3>
+        <ul><li>【重點】</li><li>【重點】</li><li>【重點】</li></ul>
+      </div>
+    </div>
+
+    <div class="card alert">
+      <div class="badge-ico">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b03a1f" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 3.5L21.5 20H2.5z"/><path d="M12 10v4.5M12 17.2h.01"/>
+        </svg>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <span class="tag">【警示標籤】</span>
+        <h3>【一句結論】</h3>
+        <ul><li>【重點】</li><li>【重點】</li><li>【重點】</li></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="badge-ico">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3f5d47" stroke-width="1.8" stroke-linecap="round">
+          <path d="M7 3.5h10a1.5 1.5 0 011.5 1.5v14a1.5 1.5 0 01-1.5 1.5H7A1.5 1.5 0 015.5 19V5A1.5 1.5 0 017 3.5z"/>
+          <path d="M9 9h6M9 12.5h6M9 16h3.5"/>
+        </svg>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <span class="tag">【標籤】</span>
+        <h3>【一句結論】</h3>
+        <div class="flow">
+          <span>【步驟一】</span><em>›</em>
+          <span class="hot">【關鍵步驟】</span><em>›</em>
+          <span>【步驟三】</span><em>›</em>
+          <span>【步驟四】</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>【依據：某年某月某日某會議通過】</div>
+    <div>【詳細規定以某某處公告為準】</div>
+  </footer>
+
+</div>
+
+<button class="ui-only" id="btn">⬇ 下載 PNG</button>
+
+<script>
+/* ?shot=1（render.py 會帶）時移除螢幕限定 UI */
+if (location.search.includes('shot')) document.getElementById('btn').remove();
+const btn = document.getElementById('btn');
+if (btn) btn.addEventListener('click', async () => {
+  btn.textContent = '產生中…';
+  try{
+    const url = await htmlToImage.toPng(document.body, {
+      pixelRatio: 2, width: 1536, height: 1024,
+      skipFonts: true,                      /* Google Fonts 跨網域讀不到 cssRules */
+      backgroundColor: '#fbf7ee',
+      filter: n => !(n.classList && n.classList.contains('ui-only'))
+    });
+    const a = document.createElement('a');
+    a.href = url; a.download = '懶人包.png'; a.click();
+    btn.textContent = '⬇ 下載 PNG';
+  }catch(e){ btn.textContent = '失敗：' + e.message; }
+});
+</script>
+</body>
+</html>
