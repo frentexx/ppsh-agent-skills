@@ -14,7 +14,7 @@
 
 | 技能 | 你怎麼叫它 | 它會做什麼 | 對應教材 |
 |---|---|---|---|
-| `ppsh-project-init` | 「初始化專案」 | 建立 `AGENTS.md`（專案藍圖）與 `handoff.md`（交接檔） | A5 |
+| `ppsh-project-init` | 「初始化專案」 | 建立 `AGENTS.md`（專案藍圖）與 `handoff.md`（交接檔），並放一行 `@AGENTS.md` 的 `CLAUDE.md` 讓 Claude Code 自動讀藍圖 | A5 |
 | `ppsh-startup` | 「開工」 | 讀兩份檔案，回報上次做到哪、下一步 | A5 |
 | `ppsh-shutdown` | 「收工」 | 把今天進度寫進交接檔，提醒雲端硬碟同步 | A5 |
 | `ppsh-office-reader` | 「幫我讀這份 Word／PDF／簡報／Excel」 | 把檔案轉成文字再閱讀，不改原檔 | A3、A4 |
