@@ -5,8 +5,9 @@
 >
 > ✅ 適用：**Codex Desktop**、**Claude Code**（兩者都支援 Skills）
 
-安裝步驟、環境檢查、疑難排解請看姊妹 repo：
-👉 **[屏北高中 Agent 基本功懶人包](https://github.com/frentexx/ppsh-agent-basics-packs)**
+**不用打指令就能安裝**：跳到下方「[安裝：一段話交給 AI Agent](#安裝一段話交給-ai-agent)」，複製那段話貼給你的 AI Agent 就好。
+
+想了解每個工具在做什麼，看姊妹 repo：👉 **[屏北高中 Agent 基本功懶人包](https://github.com/frentexx/ppsh-agent-basics-packs)**
 
 ---
 
@@ -49,67 +50,125 @@
 
 ---
 
-## 最簡單的安裝方式：交給你的 AI Agent
+## 安裝：一段話交給 AI Agent
 
-把下面這段貼給你的 AI Agent：
+**老師不用打任何指令。** 只要做四件事：
+
+1. 打開 **Codex Desktop** 或 **Claude Code**
+2. 把下面這段話**整段複製、貼上、送出**
+3. AI 要動到電腦時會跳出確認，**看一眼、按同意**
+4. AI 說「裝好了，請重開」時，把 Codex／Claude Code **整個關掉再打開**
 
 ```text
-請讀取 https://github.com/frentexx/ppsh-agent-basics-packs 的 02-專案初始化開工收工技能.md
-與 03-教材產出技能包.md，
-照裡面的步驟幫我檢查環境並安裝技能。每一個會改動電腦的指令，先給我看、經我同意再執行。
+請讀取 https://github.com/frentexx/ppsh-agent-skills 的 README.md，
+照其中「給 AI Agent 的安裝步驟」，幫我把屏北高中的技能和需要的工具全部裝好。
+我不熟指令：請你自己判斷、自己執行，需要我同意的地方跳出確認就好，不要叫我自己打指令。
+全部做完後，用一張簡單的表告訴我結果，以及我接下來要做什麼。
 ```
 
-## 三種安裝方式
+**怎麼確認裝好了**：重開後問它「**你有哪些 ppsh 開頭的技能？**」，列得出 7 個就成功了。
 
-| 方式 | 適合誰 | 裝到哪 |
-|---|---|---|
-| **① `npx skills add`（推薦）** | 已裝好 Node.js | Codex：`.agents\skills`；Claude Code：`.claude\skills` |
-| ② 請 Codex 用內建 `$skill-installer` 裝 | 只用 Codex、沒有 Node.js | `.codex\skills`（見下方注意） |
-| ③ 下載 ZIP 手動複製 | 前兩種都不行 | 自己複製到下方表格的位置 |
+**裝到一半失敗**：不用自己修。把 AI 最後給你的結果表**截圖給研習講師**。
+（中途被要求重開也沒關係，重開後**再貼一次同一段話**，已經裝好的會自動跳過。）
 
-> **用 ② 裝的注意**：Codex 內建的 `$skill-installer` 會把技能放在 `%USERPROFILE%\.codex\skills\`，
-> 但 OpenAI 官方文件寫的個人技能資料夾是 `%USERPROFILE%\.agents\skills\`。
-> 裝完**重開 Codex**，打「開工」之類的觸發詞測試；**叫不出技能**，就把 `ppsh-*` 資料夾搬到 `.agents\skills\` 再重開一次。
+---
 
-## ① 自己下指令安裝（推薦）
+## 給 AI Agent 的安裝步驟（老師不用看這段）
 
-需要先裝好 **Node.js**（沒有的話看基本功懶人包的 00）。在 PowerShell 或終端機執行：
+> 你正在幫一位**不熟指令**的高中老師安裝技能。規則：
+> - **所有指令由你執行**，不要叫老師自己打指令，也不要把參數說明丟給老師看。
+> - 會改動電腦的步驟（安裝軟體、寫入技能資料夾）照你所在 Agent 的權限確認機制取得同意即可；只讀的檢查直接跑。
+> - **不要讀取、索取或顯示任何 API 金鑰**；這 7 個技能都不需要金鑰。
+> - 某一步失敗就停在那一步，用白話說明卡在哪；**不要換成本文件以外的方法硬裝**。
+> - 可以重複執行：已經裝好的項目檢查通過就跳過，不要重裝。
 
-**Codex Desktop：**
+### 要裝的技能（7 個）
+
+`ppsh-project-init`、`ppsh-startup`、`ppsh-shutdown`、`ppsh-office-reader`、`ppsh-soil-infographic`、`ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`
+
+**不要裝** `ppsh-soil-image-deck`、`ppsh-draw`（附錄技能，要老師明確指名才裝）。
+
+### 步驟 1：判斷你是哪個 Agent
+
+| 你是 | 技能資料夾（Windows） | 技能資料夾（macOS） | npx 的 `-a` |
+|---|---|---|---|
+| Codex Desktop | `%USERPROFILE%\.agents\skills\` | `~/.agents/skills/` | `codex` |
+| Claude Code | `%USERPROFILE%\.claude\skills\` | `~/.claude/skills/` | `claude-code` |
+
+- Codex **不要用內建的 `$skill-installer`**：它會裝到 `.codex\skills\`，不是官方的個人技能資料夾。
+- 只裝到**你自己**的資料夾。老師若說兩個 Agent 都要，才兩邊都裝。
+
+### 步驟 2：安裝技能
+
+**路線 A（`node --version` 有版本號時優先用）：**
 
 ```powershell
-npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck -a codex -g -y --copy
+npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck -a <codex 或 claude-code> -g -y --copy
 ```
 
-**Claude Code：**
+PowerShell 回「因為這個系統上已停用指令碼執行」→ 把 `npx` 改成 `npx.cmd` 重跑。
+
+**路線 B（沒有 Node.js，或路線 A 失敗）：下載 ZIP 後複製**
 
 ```powershell
-npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck -a claude-code -g -y --copy
+$tmp = Join-Path $env:TEMP "ppsh-agent-skills"
+Invoke-WebRequest "https://github.com/frentexx/ppsh-agent-skills/archive/refs/heads/main.zip" -OutFile "$tmp.zip"
+Expand-Archive "$tmp.zip" -DestinationPath $tmp -Force
+$dst = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
+New-Item -ItemType Directory -Force $dst | Out-Null
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck') {
+  Copy-Item "$tmp\ppsh-agent-skills-main\skills\$s" $dst -Recurse -Force
+}
 ```
 
-**兩個都有：** 把 `-a codex` 換成 `-a codex claude-code`。
+macOS 用 `curl -L -o` 下載、`unzip` 解壓，再 `cp -R` 到上表的資料夾。
 
-| 參數 | 意思 |
+### 步驟 3：確認技能檔案到位（只讀）
+
+```powershell
+$dir = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck') {
+  "{0,-26} {1}" -f $s, (Test-Path "$dir\$s\SKILL.md")
+}
+"render.py                  {0}" -f (Test-Path "$dir\ppsh-soil-infographic\render.py")
+```
+
+8 行都要是 `True`。
+
+### 步驟 4：補齊執行環境
+
+技能裝好不代表能用。先全部檢查一輪，**只補缺的**：
+
+| 需要什麼 | 給哪個技能用 | 檢查（只讀） | 缺了怎麼補（要同意） |
+|---|---|---|---|
+| Python 3.12 或 3.13 | 三個 `ppsh-soil-*` | `python --version`；失敗再試 `py -0p` | `winget install --id Python.Python.3.13 -e --accept-source-agreements --accept-package-agreements` |
+| python-pptx、Pillow、PyYAML、lxml（另建議 matplotlib、latex2mathml） | `ppsh-soil-teaching-deck` | `python -X utf8 -c "import importlib.util as u; [print(m, 'OK' if u.find_spec(m) else '缺') for m in ['pptx','PIL','yaml','lxml','matplotlib','latex2mathml']]"` | `python -X utf8 -m pip install python-pptx Pillow PyYAML lxml matplotlib latex2mathml` |
+| Chrome 或 Edge | `ppsh-soil-infographic` | `Test-Path` 這兩個路徑，**任一個 `True` 就算有**：`C:\Program Files\Google\Chrome\Application\chrome.exe`、`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` | 有 Edge 就不用補；都沒有才 `winget install --id Google.Chrome -e --accept-source-agreements --accept-package-agreements` |
+| uv ＋ MarkItDown | `ppsh-office-reader` | `markitdown --version`；失敗再看 `uv --version` | `winget install --id astral-sh.uv -e --accept-source-agreements --accept-package-agreements`，再 `uv tool install "markitdown[pdf,docx,pptx,xlsx]"` |
+
+容易踩的坑：
+
+- **`python` 跳出 Microsoft Store 或沒反應**＝Windows 的市集空殼，不是真的 Python。看 `py -0p`：有版本就把上表的 `python` 全部換成 `py -3.13`（換成列出的版本）；沒有才安裝。
+- **不要用 `where.exe chrome` 判斷瀏覽器**，瀏覽器通常不在 PATH 裡。
+- **Python 3.14 以上**：套件可能要現場編譯，會跑好幾分鐘，先告訴老師「正常，請等」。
+- **剛用 winget 裝好的 Python／uv，這個對話還叫不到**（PATH 要重開才更新）。這時直接結束並請老師重開、再貼一次同一段話；重跑時已完成的步驟會檢查通過自動跳過。
+- 更完整的說明與疑難排解：[基本功懶人包](https://github.com/frentexx/ppsh-agent-basics-packs) 的 00（環境）、01（MarkItDown）、03（產出技能）。
+
+### 步驟 5：回報老師
+
+用白話表格回報，**不要貼指令輸出原文**：
+
+| 項目 | 結果 |
 |---|---|
-| `-s` | 要裝哪幾個技能 |
-| `-a` | 裝給哪個 Agent |
-| `-g` | 裝到個人層級（所有專案都能用） |
-| `-y` | 不逐項詢問 |
-| `--copy` | 直接複製檔案（Windows 建議加，避免捷徑權限問題） |
+| 7 個技能 | ✅ 全部裝好／❌ 缺哪幾個 |
+| Python（做簡報、圖卡用） | ✅ 版本／❌ |
+| 瀏覽器（做圖卡用） | ✅ Chrome 或 Edge／❌ |
+| Office 讀取工具 | ✅／❌ |
 
-裝完**重新開啟** Codex Desktop 或 Claude Code，技能才會出現。
+最後一定要明確告訴老師下一步，例如：
+「請把 Codex（或 Claude Code）**整個關掉再打開**，然後問我：『你有哪些 ppsh 開頭的技能？』」
 
-## ③ 不能用 npx 時：手動複製
-
-1. 按本頁綠色 **Code** → **Download ZIP**，解壓縮
-2. 把 `skills` 資料夾裡要用的 `ppsh-*` 資料夾，複製到：
-
-| Agent | 目的地（Windows） | 目的地（macOS） |
-|---|---|---|
-| Codex Desktop | `%USERPROFILE%\.agents\skills\` | `~/.agents/skills/` |
-| Claude Code | `%USERPROFILE%\.claude\skills\` | `~/.claude/skills/` |
-
-3. 重新開啟 Agent
+有任何一項 ❌：說明卡在哪一步、錯誤訊息第一行，請老師**截圖給研習講師**，不要自己換別的方法硬裝。
 
 ---
 
