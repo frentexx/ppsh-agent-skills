@@ -31,7 +31,7 @@
 
 | 技能 | 產出 | 要 API 金鑰嗎 |
 |---|---|---|
-| `ppsh-soil-image-deck` | 每頁一張 AI 生圖的 .pptx | ❌ **一定要，而且要付費** |
+| `ppsh-soil-image-deck` | 每頁一張 AI 生圖的 .pptx | **Codex Desktop：✅ 不用**（用 Codex 內建生圖，會用掉 ChatGPT 方案額度）<br>**Claude Code：❌ 要付費的 Gemini 金鑰**（Claude Code 沒有內建生圖） |
 | `ppsh-draw` | 單張 AI 插圖 PNG | ❌ **一定要，而且要付費** |
 
 > **選錯技能會整份重做，先分清楚**：
@@ -59,7 +59,19 @@
 照裡面的步驟幫我檢查環境並安裝技能。每一個會改動電腦的指令，先給我看、經我同意再執行。
 ```
 
-## 自己下指令安裝
+## 三種安裝方式
+
+| 方式 | 適合誰 | 裝到哪 |
+|---|---|---|
+| **① `npx skills add`（推薦）** | 已裝好 Node.js | Codex：`.agents\skills`；Claude Code：`.claude\skills` |
+| ② 請 Codex 用內建 `$skill-installer` 裝 | 只用 Codex、沒有 Node.js | `.codex\skills`（見下方注意） |
+| ③ 下載 ZIP 手動複製 | 前兩種都不行 | 自己複製到下方表格的位置 |
+
+> **用 ② 裝的注意**：Codex 內建的 `$skill-installer` 會把技能放在 `%USERPROFILE%\.codex\skills\`，
+> 但 OpenAI 官方文件寫的個人技能資料夾是 `%USERPROFILE%\.agents\skills\`。
+> 裝完**重開 Codex**，打「開工」之類的觸發詞測試；**叫不出技能**，就把 `ppsh-*` 資料夾搬到 `.agents\skills\` 再重開一次。
+
+## ① 自己下指令安裝（推薦）
 
 需要先裝好 **Node.js**（沒有的話看基本功懶人包的 00）。在 PowerShell 或終端機執行：
 
@@ -87,7 +99,7 @@ npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh
 
 裝完**重新開啟** Codex Desktop 或 Claude Code，技能才會出現。
 
-## 不能用 npx 時：手動複製
+## ③ 不能用 npx 時：手動複製
 
 1. 按本頁綠色 **Code** → **Download ZIP**，解壓縮
 2. 把 `skills` 資料夾裡要用的 `ppsh-*` 資料夾，複製到：
@@ -103,7 +115,7 @@ npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh
 
 ## 安全說明
 
-- 這些技能**只會讀寫你專案資料夾裡的 Markdown 檔**，以及把 Office 檔轉成文字副本。
+- 這些技能**只在你的專案資料夾裡讀寫檔案**（Markdown、圖卡 PNG、.pptx、.html、AI 生圖，以及 Office 檔的文字副本），不會存到桌面、下載或技能資料夾。專案資料夾＝你開啟 Agent 對話時所在的資料夾；看不出是哪個專案時，AI 會先問你。
 - 安裝任何技能前，都建議先打開 `SKILL.md` 看一遍——**這也是研習教的：來路不明的技能先讀再裝。**
 - `ppsh-office-reader` 讀出來的內容會送到 AI 模型端處理，含學生個資的檔案請先去識別化。
 
@@ -115,7 +127,7 @@ MIT License。架構參考 [mathruffian-dot/codex-lazy-packs](https://github.com
 
 | 技能 | 來源 | 改了什麼 |
 |---|---|---|
-| `ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-image-deck` | 改作自 [mathruffian-dot/soil-deck-skills](https://github.com/mathruffian-dot/soil-deck-skills)（MIT，© 2026 mathruffian-dot），原作授權全文附於各技能資料夾的 `LICENSE` | 生圖改為選用並支援無金鑰時改走向量版面、生圖改走 Gemini、移除寫死的本機路徑、幾何圖改用 Chrome 渲染、html-deck 拿掉頁數限制並改為投影可讀字級、加研習版須知 |
+| `ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-image-deck` | 改作自 [mathruffian-dot/soil-deck-skills](https://github.com/mathruffian-dot/soil-deck-skills)（MIT，© 2026 mathruffian-dot），原作授權全文附於各技能資料夾的 `LICENSE` | 生圖改為選用並支援無金鑰時改走向量版面、生圖改走 Gemini（image-deck 改為 Codex 內建生圖優先、沒有才走 Gemini）、移除寫死的本機路徑、幾何圖改用 Chrome 渲染、html-deck 拿掉頁數限制並改為投影可讀字級、加研習版須知 |
 | `ppsh-soil-html-deck` 的 `references/firebase-interact.md` | 移植自 [mathruffian-dot/claude-html-slide-builder](https://github.com/mathruffian-dot/claude-html-slide-builder)（MIT） | — |
 | `ppsh-soil-infographic`、`ppsh-draw` 及其餘技能 | 本校自編 | — |
 

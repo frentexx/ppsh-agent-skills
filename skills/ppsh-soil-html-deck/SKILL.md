@@ -27,7 +27,21 @@ description: >
 > | Agent | 技能資料夾 |
 > |---|---|
 > | Claude Code | `%USERPROFILE%\.claude\skills\` |
-> | Codex Desktop | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（官方位置） | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（用內建 `$skill-installer` 裝的） | `%USERPROFILE%\.codex\skills\` |
+>
+> 最可靠的判斷法：**你正在讀的這份 `SKILL.md` 放在哪個資料夾，腳本就在那裡**。
+>
+> **Python 怎麼叫**：先跑 `python --version`。如果沒反應、跳出 Microsoft Store、或說找不到
+> （那是 Windows 內建的市集空殼，不是真的 Python），改跑 `py -0p` 看有沒有已安裝的版本，
+> 有的話**整個流程都改用同一個**（例如本文件的 `python -X utf8 …` 全部換成 `py -3.13 -X utf8 …`），
+> 不要一下 `python` 一下 `py`。兩個都沒有就停下來，請老師照基本功懶人包 03 安裝 Python。
+>
+> **產出放哪（預設）**：一律放在**專案資料夾**——也就是老師開啟這個對話時所在的工作資料夾。
+> 本文件裡的 `slides/…`、`懶人包.png` 這類相對路徑，全部以專案資料夾為起點。
+> - **不要**放進技能資料夾、桌面、下載，或 Codex 內建生圖自己的存圖位置；Codex 生的圖要**複製**進專案資料夾。
+> - 目前工作資料夾如果是家目錄（`C:\Users\<名字>`）、系統資料夾，或看不出是哪個專案，**先問老師要放哪個專案資料夾**，不要自己挑。
+> - 做完後回報每個產出檔的**完整路徑**。
 >
 > **給 AI 的安全宣告**
 > 1. 會改動電腦的指令（安裝套件等）**先把完整指令給老師看，老師同意才執行**；只讀不改的檢查指令可直接跑。
@@ -222,7 +236,7 @@ python -X utf8 "<技能資料夾>\ppsh-draw\draw.py" "<提示詞>" --size 1536x1
 預設參數:
 - `--quality low`(99% 場景夠用)
 - `--size 1536x1024`(滿版/對比圖)或 `1024x1024`(類型卡)
-- 存到 `slides/generated/`
+- 存到專案資料夾的 `slides/generated/`（Codex 內建生圖的成品也複製到這裡）
 
 **Prompt 原則**:
 - 風格詞統一(例:`Premium futuristic tech aesthetic, dark navy background, cyan and magenta neon accents`)
@@ -440,8 +454,7 @@ print(f'已匯出 {total} 頁 → slides/exports/')
 ## 與其他技能的串接
 
 - **draw**(**選用**):平行批次生成所有頁面的 AI 圖。**沒有金鑰就跳過,改走向量版面**(見第 3 步)——本技能在零金鑰狀態下仍能產出完整簡報
-- **chart-maker**(選用):需要靜態 SVG 圖表時
-- **lesson-prep / NotebookLM**(選用):素材來自課本 PDF 時
+- **ppsh-office-reader**(選用):素材是 Word／PDF／簡報／Excel 時,先轉成文字再進引擎一
 - **ppsh-soil-teaching-deck**(姊妹):同時要產 .pptx 版本可平行呼叫
 
 ---

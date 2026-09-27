@@ -26,7 +26,21 @@ description: >
 > | Agent | 技能資料夾 |
 > |---|---|
 > | Claude Code | `%USERPROFILE%\.claude\skills\` |
-> | Codex Desktop | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（官方位置） | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（用內建 `$skill-installer` 裝的） | `%USERPROFILE%\.codex\skills\` |
+>
+> 最可靠的判斷法：**你正在讀的這份 `SKILL.md` 放在哪個資料夾，腳本就在那裡**。
+>
+> **Python 怎麼叫**：先跑 `python --version`。如果沒反應、跳出 Microsoft Store、或說找不到
+> （那是 Windows 內建的市集空殼，不是真的 Python），改跑 `py -0p` 看有沒有已安裝的版本，
+> 有的話**整個流程都改用同一個**（例如本文件的 `python -X utf8 …` 全部換成 `py -3.13 -X utf8 …`），
+> 不要一下 `python` 一下 `py`。兩個都沒有就停下來，請老師照基本功懶人包 03 安裝 Python。
+>
+> **產出放哪（預設）**：一律放在**專案資料夾**——也就是老師開啟這個對話時所在的工作資料夾。
+> 本文件裡的 `slides/…`、`懶人包.png` 這類相對路徑，全部以專案資料夾為起點。
+> - **不要**放進技能資料夾、桌面、下載，或 Codex 內建生圖自己的存圖位置；Codex 生的圖要**複製**進專案資料夾。
+> - 目前工作資料夾如果是家目錄（`C:\Users\<名字>`）、系統資料夾，或看不出是哪個專案，**先問老師要放哪個專案資料夾**，不要自己挑。
+> - 做完後回報每個產出檔的**完整路徑**。
 >
 > **給 AI 的安全宣告**
 > 1. 會改動電腦的指令（安裝套件等）**先把完整指令給老師看，老師同意才執行**；只讀不改的檢查指令可直接跑。
@@ -39,7 +53,7 @@ description: >
 以李俊儀教授的 SOIL 教學心法為基礎的教學簡報工作流。
 六顆引擎、一條清楚的路徑：先想清楚教什麼，再安排怎麼教，最後才處理怎麼呈現。
 
-> 完整理論參考：讀取 [references/soil-theory.md](references/soil-theory.md)
+> 六顆引擎的完整做法都寫在本文件裡，**不需要另外找理論參考檔**（原作的 `references/soil-theory.md` 並不存在）。
 
 ---
 
@@ -377,8 +391,8 @@ description: >
 
 使用者上傳現有 .pptx 時：
 
-1. 先用 `python -m markitdown` 提取文字內容
-2. 用 pptx 技能的 `thumbnail.py` 或轉成圖片來看視覺佈局
+1. 先用 `markitdown "<檔案>.pptx"` 提取文字內容（markitdown 是懶人包 01 用 `uv tool` 裝的獨立指令，**不要寫成 `python -m markitdown`**，那樣會找不到）
+2. 轉成圖片來看視覺佈局（做法同下方「第二輪：修頁面」；沒有 LibreOffice 就請老師用 PowerPoint 開檔截圖給你）
 3. 逐頁用六個認知詞診斷問題
 4. 輸出「認知編修報告」
 
@@ -740,7 +754,7 @@ $DRAW "一張發光的火箭向上飛，象徵學習突破，${STYLE}，${NEG}" 
 ls slides/images/*.png
 ```
 
-> **成本估算**：low 品質一張約 NT$0.3；一份 10 頁簡報若 4 頁有插畫，約 NT$1.2。
+> **成本**：Gemini 生圖按張計費，**開跑前把總張數告訴老師，同意才執行**；價格以 Google 官方公告為準，不要自己報數字。
 > **並行加速**：若張數多（>5），可把多個 `$DRAW ... &` 用 `&` 背景啟動後 `wait`，能省一半時間。
 
 #### I-2：視覺確認（必做）
@@ -873,8 +887,8 @@ slide.addImage({
 生成完成後，執行視覺 QA：
 
 ```bash
-# 文字內容檢查
-python -m markitdown output.pptx
+# 文字內容檢查（markitdown 是獨立指令，不要加 python -m）
+markitdown output.pptx
 
 # 轉成圖片逐頁檢查
 soffice --headless --convert-to pdf output.pptx   # 需已安裝 LibreOffice；沒有就跳過這段，改用 PowerPoint 手動開檔目視檢查
@@ -915,7 +929,7 @@ ls -1 "$PWD"/slide-*.jpg
 
 ### 輸出
 
-將最終 .pptx 存到使用者的工作資料夾，提供下載連結。
+將最終 .pptx 存到**專案資料夾**（見開頭「產出放哪」），回報完整路徑。
 簡要說明投影片架構（幾頁、三段式各幾頁、有哪些關鍵頁）。
 
 ---
@@ -927,7 +941,7 @@ ls -1 "$PWD"/slide-*.jpg
 ### Step 1：讀取現有簡報
 
 ```bash
-python -m markitdown input.pptx
+markitdown input.pptx
 ```
 
 同時轉成圖片檢視視覺佈局。
@@ -964,7 +978,7 @@ python -m markitdown input.pptx
 ## 林長揚 30 條簡報原則整合
 
 本技能整合林長揚「AI 還不會的 30 個簡報秘訣」作為引擎五與引擎六的品質檢查規則。
-完整條目見 [知識庫/AI工作流/簡報設計 30 原則 — AI 做不到的人類判斷]。
+下面已列出本技能要用到的規則，**不需要另外找原始筆記**（本技能沒有附上那份檔案）。
 
 ### 硬規則（引擎五風格建構師自動套用）
 

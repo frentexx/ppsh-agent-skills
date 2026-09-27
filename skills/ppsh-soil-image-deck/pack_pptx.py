@@ -4,6 +4,9 @@ soil-image-deck 打包腳本
 支援兩種模式：
 - baked（預設）：圖裡已含文字，pptx 每頁一張 full-bleed 圖即可
 - plate：圖為無文字底圖，依 YAML spec 疊加可編輯文字框
+
+兩種模式都會先把圖中央裁成版面比例（例如 1536x1024 的 3:2 圖裁成 16:9），不會拉伸變形。
+圖檔可以是 .png／.jpg／.jpeg／.webp，檔名開頭 page_NN_（NN 兩位數頁碼）。
 """
 import argparse
 import glob
@@ -58,8 +61,17 @@ def hex_to_rgb(h: str) -> RGBColor:
     return RGBColor(int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
 
 
+IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".webp")
+
+
+def list_images(images_dir: Path, pattern: str) -> list[str]:
+    """依檔名排序列出符合 pattern 的圖檔（接受 png／jpg／webp）。"""
+    return sorted(p for p in glob.glob(str(images_dir / pattern))
+                  if Path(p).suffix.lower() in IMAGE_EXTS)
+
+
 def find_latest(images_dir: Path, prefix: str) -> str | None:
-    cands = sorted(glob.glob(str(images_dir / f"{prefix}_*.png")))
+    cands = list_images(images_dir, f"{prefix}_*")
     return cands[-1] if cands else None
 
 
@@ -203,15 +215,17 @@ def add_textbox(slide, block: dict, palette: dict, default_font: str, title_font
             run.font.name = font_name
 
 
-def pack_baked(images_dir: Path, output: Path):
+def pack_baked(images_dir: Path, output: Path, title: str | None = None):
     prs = Presentation()
+    if title:
+        prs.core_properties.title = title
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
     blank = prs.slide_layouts[6]
 
-    pngs = sorted(glob.glob(str(images_dir / "page_*.png")))
+    pngs = list_images(images_dir, "page_*")
     if not pngs:
-        raise SystemExit(f"錯誤：{images_dir} 找不到 page_*.png")
+        raise SystemExit(f"錯誤：{images_dir} 找不到 page_*.png／.jpg／.webp")
 
     by_page = {}
     for p in pngs:
@@ -221,6 +235,8 @@ def pack_baked(images_dir: Path, output: Path):
     for prefix in sorted(by_page.keys()):
         png = by_page[prefix]
         slide = prs.slides.add_slide(blank)
+        # 先裁成 16:9 再滿版貼上，避免 3:2 的生圖被拉伸變形
+        png = crop_to_ratio(png, 13.333, 7.5, images_dir)
         slide.shapes.add_picture(png, 0, 0, prs.slide_width, prs.slide_height)
         print(f"  [baked] {prefix}  <-  {Path(png).name}")
 
@@ -229,7 +245,7 @@ def pack_baked(images_dir: Path, output: Path):
     print(f"[OK] {output.resolve()}  ({len(by_page)} 頁)")
 
 
-def pack_plate(images_dir: Path, output: Path, spec_path: Path):
+def pack_plate(images_dir: Path, output: Path, spec_path: Path, title: str | None = None):
     spec = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
 
     palette = {**DEFAULT_PALETTE, **(spec.get("style", {}).get("palette", {}))}
@@ -239,6 +255,8 @@ def pack_plate(images_dir: Path, output: Path, spec_path: Path):
     body_font = style_cfg.get("body_font") or default_font
 
     prs = Presentation()
+    if title:
+        prs.core_properties.title = title
     prs.slide_width = Inches(13.333)
     prs.slide_height = Inches(7.5)
     blank = prs.slide_layouts[6]
@@ -288,17 +306,18 @@ def main():
     p.add_argument("--mode", choices=["baked", "plate"], default="baked",
                    help="baked=圖內含文字；plate=底圖+可編輯文字框")
     p.add_argument("--spec", default=None, help="plate 模式的 YAML 規格檔")
+    p.add_argument("--title", default=None, help="寫進 pptx 檔案內容的簡報標題（選填）")
     args = p.parse_args()
 
     images_dir = Path(args.images_dir)
     output = Path(args.output)
 
     if args.mode == "baked":
-        pack_baked(images_dir, output)
+        pack_baked(images_dir, output, args.title)
     else:
         if not args.spec:
             raise SystemExit("plate 模式需要 --spec <spec.yaml>")
-        pack_plate(images_dir, output, Path(args.spec))
+        pack_plate(images_dir, output, Path(args.spec), args.title)
 
 
 if __name__ == "__main__":

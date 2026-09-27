@@ -16,8 +16,11 @@ description: >
 > ## 📌 屏北高中研習版須知（先讀這段）
 >
 > **這個技能做什麼**：每頁一張 AI 生圖的 .pptx
-> **要不要 API 金鑰**：❌ **一定要付費生圖金鑰**，沒有就做不出東西
-> **研習定位**：**本場研習不教，下一場才教**
+> **要不要 API 金鑰**：看你用哪個 Agent——
+> - **Codex Desktop**：✅ **不用**。用 Codex **內建生圖**，不另外收費，但會用掉你 ChatGPT 方案的使用額度
+> - **Claude Code**：❌ **要付費的 Gemini 生圖金鑰**（Claude Code 沒有內建生圖）
+>
+> **研習定位**：**本場研習不教，下一場才教**（用 Codex 的老師課後可以自己試）
 >
 > **腳本放在哪**：本技能的腳本與這份 `SKILL.md` **在同一個資料夾**。
 > 跨技能呼叫（例如借用 `ppsh-soil-infographic/render.py`）時，它在**同一層的姊妹資料夾**裡。
@@ -26,7 +29,21 @@ description: >
 > | Agent | 技能資料夾 |
 > |---|---|
 > | Claude Code | `%USERPROFILE%\.claude\skills\` |
-> | Codex Desktop | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（官方位置） | `%USERPROFILE%\.agents\skills\` |
+> | Codex Desktop（用內建 `$skill-installer` 裝的） | `%USERPROFILE%\.codex\skills\` |
+>
+> 最可靠的判斷法：**你正在讀的這份 `SKILL.md` 放在哪個資料夾，腳本就在那裡**。
+>
+> **Python 怎麼叫**：先跑 `python --version`。如果沒反應、跳出 Microsoft Store、或說找不到
+> （那是 Windows 內建的市集空殼，不是真的 Python），改跑 `py -0p` 看有沒有已安裝的版本，
+> 有的話**整個流程都改用同一個**（例如本文件的 `python -X utf8 …` 全部換成 `py -3.13 -X utf8 …`），
+> 不要一下 `python` 一下 `py`。兩個都沒有就停下來，請老師照基本功懶人包 03 安裝 Python。
+>
+> **產出放哪（預設）**：一律放在**專案資料夾**——也就是老師開啟這個對話時所在的工作資料夾。
+> 本文件裡的 `slides/…`、`懶人包.png` 這類相對路徑，全部以專案資料夾為起點。
+> - **不要**放進技能資料夾、桌面、下載，或 Codex 內建生圖自己的存圖位置；Codex 生的圖要**複製**進專案資料夾。
+> - 目前工作資料夾如果是家目錄（`C:\Users\<名字>`）、系統資料夾，或看不出是哪個專案，**先問老師要放哪個專案資料夾**，不要自己挑。
+> - 做完後回報每個產出檔的**完整路徑**。
 >
 > **給 AI 的安全宣告**
 > 1. 會改動電腦的指令（安裝套件等）**先把完整指令給老師看，老師同意才執行**；只讀不改的檢查指令可直接跑。
@@ -36,7 +53,8 @@ description: >
 
 # SOIL 純圖片教學簡報（ppsh-soil-image-deck）
 
-以 SOIL 六顆引擎的教學判斷為骨架，用 Gemini 生圖模型逐頁生成**整頁圖像**，最後打包成 .pptx。
+以 SOIL 六顆引擎的教學判斷為骨架，用 AI 生圖逐頁生成**整頁圖像**，最後打包成 .pptx。
+生圖走哪條路（Codex 內建生圖／Gemini API）在引擎六開工前判斷，見「I-0」。
 
 > **與 ppsh-soil-teaching-deck 的差別**
 > - `ppsh-soil-teaching-deck`：引擎 6 寫 PptxGenJS/python-pptx，產出「文字 + 插圖」的 editable pptx
@@ -81,7 +99,7 @@ description: >
 
 > 1. **教學對象是誰？**（國中生、高中生、老師研習、一般觀眾、社群受眾）
 > 2. **簡報總頁數？**（預設 10 頁；社群貼文通常 6–9 頁；研習暖場 10–12 頁）
-> 3. **有預算上限嗎？**（low 品質每張 NT$0.3，10 頁約 NT$3；若要高品質請說）
+> 3. **生圖額度夠嗎？**（Codex 內建生圖不另計費，但每張都會吃 ChatGPT 方案額度；走 Gemini API 則按張計費。頁數越多用越多，先確認頁數再開工）
 
 ### 進引擎五前補問：
 
@@ -211,9 +229,9 @@ image_policy:
 
 ## 引擎六：簡報總導演（純圖片版）
 
-### 生成流程（三階段：I-1 → I-2 → I-3）
+### 生成流程（I-0 → I-1 → I-2 → I-3）
 
-#### I-1：批次生圖
+#### prompt 組法（兩條生圖路線共用）
 
 對每一頁，合併 `image_policy.style_tokens` + `on_image_text` + `image_brief` + `layout_hint` 組成最終 prompt：
 
@@ -225,24 +243,56 @@ image_policy:
 避免：{negative}。
 ```
 
-> **🛑 動手前先探金鑰——本技能沒有「無生圖版面」可以退。**
-> 每一頁都是生出來的圖，沒有金鑰就沒有任何產出，所以**要在第一張圖之前就停**，
-> 不要生到一半才失敗：
->
-> ```powershell
-> python -X utf8 "<技能資料夾>\ppsh-draw\draw.py" --probe
-> ```
->
-> **離開碼 3（`[no-key]`）、或根本找不到 `draw.py`（沒安裝 `draw` 技能）時，
-> 停下來告訴使用者這三條路，讓他選，不要自己硬跑、也不要自行安裝生圖工具：**
->
-> | 選項 | 說明 |
-> |---|---|
-> | 改用 `ppsh-soil-teaching-deck` | 產出可編輯 .pptx，**零金鑰就能做完整份** |
-> | 改用 `ppsh-soil-html-deck` | 產出可分享連結的 .html，**零金鑰就能做完整份** |
-> | 設定金鑰後再回來 | `GEMINI_API_KEY`（**Gemini 生圖不在免費層，專案要先開啟帳單**；免費 key 會回 429，那不是金鑰壞掉） |
->
-> 另外提醒使用者：**免費不花錢的做法**是到 aistudio.google.com 或 Gemini App 生圖，存檔後自己放進簡報。
+#### I-0：先確認生圖路線（第一張圖之前就要判斷）
+
+> **🛑 本技能沒有「不生圖」的版面可以退。** 每一頁都是生出來的圖，
+> 所以要在第一張圖之前就確認走得通，**不要生到一半才失敗**。
+
+依序判斷，第一個成立的就用：
+
+| 順序 | 條件 | 走哪條路 |
+|---|---|---|
+| 1 | 你是 **Codex Desktop**，而且有內建生圖（工具名稱通常叫 `imagegen` 或 image generation） | **路線 A：Codex 內建生圖**（不需要金鑰） |
+| 2 | 找得到 `ppsh-draw`，而且 `draw.py --probe` 回報有金鑰 | **路線 B：Gemini API**（按張計費） |
+| 3 | 以上都不成立 | **停下來**，把下面三個選項告訴老師，讓他選 |
+
+路線 B 的金鑰檢查（只讀，不花錢）：
+
+```powershell
+python -X utf8 "<技能資料夾>\ppsh-draw\draw.py" --probe
+```
+
+離開碼 3（`[no-key]`）或找不到 `draw.py`，就是條件 2 不成立。
+
+**都不成立時給老師的三個選項**（不要自己硬跑、也不要自行安裝生圖工具）：
+
+| 選項 | 說明 |
+|---|---|
+| 改用 `ppsh-soil-teaching-deck` | 產出可編輯 .pptx，**零金鑰就能做完整份** |
+| 改用 `ppsh-soil-html-deck` | 產出可分享連結的 .html，**零金鑰就能做完整份** |
+| 換 Codex，或設定金鑰後再回來 | Codex Desktop 有內建生圖；或設定 `GEMINI_API_KEY`（**Gemini 生圖不在免費層，專案要先開啟帳單**；免費 key 會回 429，那不是金鑰壞掉） |
+
+另外提醒老師：**免費不花錢的做法**是到 aistudio.google.com 或 Gemini App 生圖，存檔後自己放進簡報。
+
+> **硬規則：不准用假圖充數。** 生圖失敗時，**不要**改用 Pillow、CSS、SVG、色塊或占位圖冒充 AI 生圖，
+> 直接停下來回報哪幾頁失敗、為什麼。
+
+#### I-1：批次生圖
+
+每一頁的 prompt 照上面的範本組好（兩條路線共用同一份 prompt），然後依 I-0 選定的路線生圖。
+**所有圖最後都要存進專案的 `slides/images/`，檔名一律 `page_NN_簡述.png`**（NN 是兩位數頁碼，例如 `page_01_封面.png`），
+I-3 打包只認這個格式。
+
+##### 路線 A：Codex 內建生圖
+
+1. **一次生一頁**，照頁碼順序來；不要一口氣平行丟出去，額度用完會卡在一半。
+2. 每一頁都要求**橫式**（landscape）畫面。生出來的比例不是 16:9 沒關係，I-3 打包時會自動從中間裁成 16:9，
+   所以**重要文字與主角不要貼邊**，四周各留一點空間。
+3. 生好後，把圖**複製**到 `slides/images/page_NN_簡述.png`。內建生圖存檔的位置依 Codex 版本而不同，
+   找不到檔案就問老師，不要猜路徑。
+4. 封面、行動頁這類關鍵頁，可以在 prompt 裡要求更精緻的品質。
+
+##### 路線 B：Gemini API（`ppsh-draw`）
 
 批次呼叫 `draw.py`（路徑 `<技能資料夾>/ppsh-draw/draw.py`）：
 
@@ -262,15 +312,14 @@ $DRAW "全版插畫 + 大問句。圖像內容：一個卡通老師站在兩條�
 # ... 其餘頁
 ```
 
-**並行加速**：頁數多時，每 3–4 張用 `&` 背景跑 + `wait`，可省一半時間。
+**並行加速**（僅路線 B）：頁數多時，每 3–4 張用 `&` 背景跑 + `wait`，可省一半時間。
 
-**成本估算**：
-- 預設 10 頁：9 張 low + 1 張 medium ≈ NT$(0.3×9 + 1.3) = **NT$4.0**
-- 15 頁：14 張 low + 1 張 medium ≈ **NT$5.5**
+**成本**（僅路線 B）：Gemini 生圖按張計費，**開跑前把總張數告訴老師，同意才執行**。
+價格以 Google 官方公告為準，不要自己報數字。
 
 #### I-2：視覺確認（必做）
 
-批次生完後，**逐張用 view 工具檢查**：
+批次生完後，**逐張打開圖檔親眼檢查**（用你的 Agent 讀圖的功能，例如 Codex 開圖、Claude Code 的 Read）：
 
 - 圖上文字是否正確、無亂碼？
 - 風格是否與 `image_policy` 一致？
@@ -280,7 +329,7 @@ $DRAW "全版插畫 + 大問句。圖像內容：一個卡通老師站在兩條�
 **不合格處理**：
 - 文字錯字 → 改 prompt 中文字部分，重跑該頁
 - 風格偏移 → 檢查 style_tokens 是否被截斷
-- 品質不足 → 升級 quality 為 medium
+- 品質不足 → 路線 A 在 prompt 要求更精緻；路線 B 把 `--quality` 升為 medium
 
 **重點**：不要讓任何一張不合格的圖進入 I-3。
 
@@ -296,8 +345,8 @@ python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" \
 ```
 
 **腳本行為**：
-- 讀取 `slides/images/page_NN_*.png`（依檔名前綴排序）
-- 每張圖以 full-bleed（滿版）方式填入一張 16:9 slide
+- 讀取 `slides/images/page_NN_*`（.png／.jpg／.webp 都可以，依檔名前綴排序）
+- **先從中間裁成 16:9**（裁好的圖放在 `slides/images/cropped/`），再以 full-bleed（滿版）方式填入一張 16:9 slide，不會拉伸變形
 - 不加任何文字（文字已在圖上）
 - 輸出單一 .pptx 檔
 
@@ -309,15 +358,15 @@ python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" \
 
 1. 快速跑完引擎 1–2（內心規劃、不詳細輸出）
 2. 直接產出引擎三的 YAML 規格，**呈現給使用者確認**
-3. 使用者確認後，一次跑完 I-1 → I-2 → I-3
-4. 回報最終 pptx 路徑 + 總成本
+3. 使用者確認後，先做 I-0 判斷生圖路線，再一次跑完 I-1 → I-2 → I-3
+4. 回報最終 pptx 路徑、走哪條生圖路線、總共生了幾張
 
 ---
 
 ## 林長揚 30 條簡報原則整合
 
 本技能依林長揚提出的「AI 還不會的 30 個簡報秘訣」進行規則化分層整合。
-來源：[知識庫/AI工作流/簡報設計 30 原則 — AI 做不到的人類判斷]
+下面 A／B／C 三層已把要用到的原則列齊，**不需要另外找原始筆記**（本技能沒有附上那份檔案）。
 
 ### A 層：硬規則（已寫入 pack_pptx.py 預設值）
 
@@ -342,7 +391,7 @@ python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" \
 | 6 | 內容層級（主標、內文、註解） | 每頁 blocks 至少含 title + 一個其他類型 |
 | 11 | 每秒 8 字 → 推算字數 | 引擎二估算每段朗讀時間 |
 | 13 | Z 字排版順序 | 引擎三 `layout_hint` 安排視線起迄 |
-| 18 | 多圖對齊、人像切圓 | 引擎六 I-4 插入規則 |
+| 18 | 多圖對齊、人像切圓 | 引擎六 I-3 打包（plate 模式排 blocks 時） |
 | 23 | 進度條減壓 | 用 `progress` block type（current/total）|
 
 ### C 層：純人類判斷（引擎一／二策略）
@@ -359,7 +408,7 @@ python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" \
 
 ### 整合使用方式
 
-1. 跑引擎一前，先讀 `知識庫/AI工作流/簡報設計 30 原則` 記憶 C 層原則
+1. 跑引擎一前，先看上面的 C 層原則
 2. 引擎三產出 YAML 時，自動套用 B 層檢查
 3. 引擎五產出 `image_policy` 與 `spec.yaml` 時，pack_pptx.py 自動套 A 層
 4. 最終檢查清單含 30 條對照（見下方）
@@ -408,15 +457,18 @@ python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" \
 
 ## 依賴
 
-- `draw` skill（路徑 `<技能資料夾>/ppsh-draw/draw.py`，Gemini 生圖模型）
-- `pack_pptx.py`（本技能內建，位於 skill 目錄下）
-- Python 套件：`openai`、`python-pptx`、`Pillow`
+| 項目 | 什麼時候要 |
+|---|---|
+| Python 3（3.12 或 3.13 最穩） | 一定要（I-3 打包） |
+| `python-pptx`、`Pillow`、`PyYAML` | 一定要（`pack_pptx.py` 用） |
+| Codex 內建生圖 | 路線 A |
+| `ppsh-draw` 技能＋`GEMINI_API_KEY`＋`openai` 套件 | 路線 B |
 
-```bash
-pip install openai python-pptx Pillow PyYAML
+```powershell
+python -X utf8 -m pip install python-pptx Pillow PyYAML
 ```
 
-前置：
+路線 B 的前置：
 - `GEMINI_API_KEY` 已設（環境變數、`.env`、或 `~/.claude/_secrets/GEMINI_API_KEY.key`）
 - ⚠️ **Gemini 生圖不在免費層**：免費金鑰會回 429（配額 0），專案必須先開啟帳單
 
@@ -539,7 +591,7 @@ pages:
 3. 批次生圖（純底圖，無文字）
 4. I-2 視覺確認：檢查留白區是否乾淨、無 AI 亂生文字
 5. 撰寫 `spec.yaml`（用範本產出）
-6. `python pack_pptx.py --mode plate --spec spec.yaml --images-dir images --output out.pptx`
+6. `python -X utf8 "<技能資料夾>\ppsh-soil-image-deck\pack_pptx.py" --mode plate --spec spec.yaml --images-dir slides/images --output slides/我的簡報.pptx`
 
 ### 三種模式的完整對照
 
@@ -553,10 +605,9 @@ pages:
 
 ## 與其他 Skill 的串接
 
-| 上游 Skill | 串接方式 |
-|-----------|---------|
-| `lesson-prep` | 備課包產出後，把核心概念摘要丟進來做純圖片簡報 |
-| `jh-math-exam` | 出題後，把題目轉成「題目情境卡片」純圖簡報（社群推廣用）|
-| `teaching-minigames` | 遊戲規則用純圖簡報說明，當作遊戲開場 |
+| 情況 | 怎麼接 |
+|---|---|
+| 素材是 Word／PDF／簡報／Excel | 先用 `ppsh-office-reader` 讀成文字，再進引擎一 |
+| 圖上要放精準數字、公式、流程 | 那幾頁改用 `ppsh-soil-infographic` 做成圖，或整份改用 `ppsh-soil-teaching-deck` |
 
 本技能也可以獨立使用，不需上游。
