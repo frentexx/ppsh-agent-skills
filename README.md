@@ -7,6 +7,8 @@
 
 **不用打指令就能安裝**：跳到下方「[安裝：一段話交給 AI Agent](#安裝一段話交給-ai-agent)」，複製那段話貼給你的 AI Agent 就好。
 
+**連接 GitHub**（把成品推上 GitHub Pages）：把 [`docs/02-連接-GitHub.md`](docs/02-連接-GitHub.md) 的網址貼給 AI Agent，請它照著做。
+
 想了解每個工具在做什麼，看姊妹 repo：👉 **[屏北高中 Agent 基本功懶人包](https://github.com/frentexx/ppsh-agent-basics-packs)**
 
 ---
@@ -209,6 +211,7 @@ MIT License。架構參考 [mathruffian-dot/codex-lazy-packs](https://github.com
 | `ppsh-soil-motion-deck` | 改作自 [mathruffian-dot/soil-motion-deck](https://github.com/mathruffian-dot/soil-motion-deck)（MIT），原作授權與第三方聲明附於技能資料夾 | 改指向本包的 `ppsh-soil-teaching-deck`、加研習版須知（已有簡報只做影片、精簡模式、旁白不放個資） |
 | `motion-explainer`、`motion-design`、`review-loop` | 原樣收錄自 [mathruffian-dot/claude-motion-explainer](https://github.com/mathruffian-dot/claude-motion-explainer)（MIT；後兩者改編自 whaleyxbt/claude-motion，MIT） | — |
 | `ppsh-clasp` | 改作自 [mathruffian-dot/clasp-gas-skill](https://github.com/mathruffian-dot/clasp-gas-skill)（MIT） | 改為先用學校帳號、被擋才換個人帳號；個資只放學校帳號、公開頁面姓名在後端遮罩 |
+| `docs/02-連接-GitHub.md` | 收錄自 [mathruffian-dot/claude-code-lazy-packs](https://github.com/mathruffian-dot/claude-code-lazy-packs)（MIT） | 開 Pages 指令改用 main 分支、加研習版說明 |
 | `ppsh-rdq` | 收錄自 [mathruffian-dot/rdq-skill](https://github.com/mathruffian-dot/rdq-skill)（MIT） | 只改技能名稱 |
 | `ppsh-soil-infographic`、`ppsh-draw` 及其餘技能 | 本校自編 | — |
 
