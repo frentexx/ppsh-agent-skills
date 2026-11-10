@@ -27,6 +27,16 @@
 | `ppsh-soil-infographic` | 「做一張圖卡」「做懶人包」「一張圖看懂」 | **單頁 PNG**，發 LINE 群用 | ✅ **不用** |
 | `ppsh-soil-teaching-deck` | 「做教學簡報」「做上課用的投影片」 | **可編輯的 .pptx** | ✅ **不用**（AI 插圖才要） |
 | `ppsh-soil-html-deck` | 「做網頁版簡報」「做可分享連結的簡報」 | **單一 .html**，可互動、可線上分享 | ✅ **不用**（AI 插圖才要） |
+| `ppsh-soil-motion-deck` | 「把這份簡報做成有口白的教學影片」「簡報關鍵頁加動畫」 | **配音＋字幕的解說影片 MP4**（也可做嵌動畫的 .pptx） | ✅ **不用**（旁白用 edge-tts，要連網） |
+
+`ppsh-soil-motion-deck` 會用到同包的三個輔助技能 `motion-explainer`、`motion-design`、`review-loop`，安裝時一起裝，不必另外叫它們。
+
+### 網頁應用程式與需求訪談（速成版使用）
+
+| 技能 | 你怎麼叫它 | 它會做什麼 | 要 API 金鑰嗎 |
+|---|---|---|---|
+| `ppsh-clasp` | 「接 Apps Script」「做一個有後端的報名網頁」「部署成網頁應用程式」 | 用 clasp 建 Google Apps Script＋試算表專案、推程式、部署，給你正確的網址 | ✅ **不用**（第一次要用瀏覽器登入 Google 學校帳號） |
+| `ppsh-rdq` | 「用 RDQ」「先訪談我再做」「幫我想想還缺什麼」 | 動工前用四象限問清楚需求，產出一頁需求規格卡，確認後才做 | ✅ **不用** |
 
 ### 附錄技能（本場研習不裝，課後想用再說）
 
@@ -40,7 +50,7 @@
 > 「**圖表**」= chart = 長條圖圓餅圖，那是簡報裡的一個元件。
 > 要「一頁一頁講」才是簡報技能。
 
-**所有技能都不碰 git、不上傳任何東西**（`ppsh-draw` 與 `ppsh-soil-image-deck` 例外：它們會把提示詞送到生圖服務）。
+**所有技能都不碰 git、不上傳任何東西**，例外：`ppsh-draw` 與 `ppsh-soil-image-deck` 會把提示詞送到生圖服務；`ppsh-soil-motion-deck` 會把旁白文字送到微軟語音服務（edge-tts）；`ppsh-clasp` 會把程式推到你的 Google 帳號並部署成網頁。
 跨電腦接續靠 Google 雲端硬碟電腦版。
 
 > **關於 AI 插圖**：三個產出技能在**沒有金鑰時會自動改用向量版面**，照樣做出完整成品，
@@ -66,7 +76,7 @@
 全部做完後，用一張簡單的表告訴我結果，以及我接下來要做什麼。
 ```
 
-**怎麼確認裝好了**：重開後問它「**你有哪些 ppsh 開頭的技能？**」，列得出 7 個就成功了。
+**怎麼確認裝好了**：重開後問它「**你有哪些 ppsh 開頭的技能？**」，列得出 10 個就成功了（另外還會看到 `motion-explainer`、`motion-design`、`review-loop` 三個輔助技能）。
 
 **裝到一半失敗**：不用自己修。把 AI 最後給你的結果表**截圖給研習講師**。
 （中途被要求重開也沒關係，重開後**再貼一次同一段話**，已經裝好的會自動跳過。）
@@ -78,13 +88,13 @@
 > 你正在幫一位**不熟指令**的高中老師安裝技能。規則：
 > - **所有指令由你執行**，不要叫老師自己打指令，也不要把參數說明丟給老師看。
 > - 會改動電腦的步驟（安裝軟體、寫入技能資料夾）照你所在 Agent 的權限確認機制取得同意即可；只讀的檢查直接跑。
-> - **不要讀取、索取或顯示任何 API 金鑰**；這 7 個技能都不需要金鑰。
+> - **不要讀取、索取或顯示任何 API 金鑰**；這些技能都不需要金鑰（`ppsh-clasp` 只需要老師在瀏覽器登入 Google）。
 > - 某一步失敗就停在那一步，用白話說明卡在哪；**不要換成本文件以外的方法硬裝**。
 > - 可以重複執行：已經裝好的項目檢查通過就跳過，不要重裝。
 
-### 要裝的技能（7 個）
+### 要裝的技能（13 個資料夾）
 
-`ppsh-project-init`、`ppsh-startup`、`ppsh-shutdown`、`ppsh-office-reader`、`ppsh-soil-infographic`、`ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`
+`ppsh-project-init`、`ppsh-startup`、`ppsh-shutdown`、`ppsh-office-reader`、`ppsh-soil-infographic`、`ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-motion-deck`、`motion-explainer`、`motion-design`、`review-loop`、`ppsh-clasp`、`ppsh-rdq`
 
 **不要裝** `ppsh-soil-image-deck`、`ppsh-draw`（附錄技能，要老師明確指名才裝）。
 
@@ -103,7 +113,7 @@
 **路線 A（`node --version` 有版本號時優先用）：**
 
 ```powershell
-npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck -a <codex 或 claude-code> -g -y --copy
+npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck ppsh-soil-motion-deck motion-explainer motion-design review-loop ppsh-clasp ppsh-rdq -a <codex 或 claude-code> -g -y --copy
 ```
 
 PowerShell 回「因為這個系統上已停用指令碼執行」→ 把 `npx` 改成 `npx.cmd` 重跑。
@@ -116,7 +126,7 @@ Invoke-WebRequest "https://github.com/frentexx/ppsh-agent-skills/archive/refs/he
 Expand-Archive "$tmp.zip" -DestinationPath $tmp -Force
 $dst = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
 New-Item -ItemType Directory -Force $dst | Out-Null
-foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck') {
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
   Copy-Item "$tmp\ppsh-agent-skills-main\skills\$s" $dst -Recurse -Force
 }
 ```
@@ -127,13 +137,13 @@ macOS 用 `curl -L -o` 下載、`unzip` 解壓，再 `cp -R` 到上表的資料�
 
 ```powershell
 $dir = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
-foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck') {
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
   "{0,-26} {1}" -f $s, (Test-Path "$dir\$s\SKILL.md")
 }
 "render.py                  {0}" -f (Test-Path "$dir\ppsh-soil-infographic\render.py")
 ```
 
-8 行都要是 `True`。
+14 行都要是 `True`。
 
 ### 步驟 4：補齊執行環境
 
@@ -144,12 +154,18 @@ foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-r
 | Python 3.12 或 3.13 | 三個 `ppsh-soil-*` | `python --version`；失敗再試 `py -0p` | `winget install --id Python.Python.3.13 -e --accept-source-agreements --accept-package-agreements` |
 | python-pptx、Pillow、PyYAML、lxml（另建議 matplotlib、latex2mathml） | `ppsh-soil-teaching-deck` | `python -X utf8 -c "import importlib.util as u; [print(m, 'OK' if u.find_spec(m) else '缺') for m in ['pptx','PIL','yaml','lxml','matplotlib','latex2mathml']]"` | `python -X utf8 -m pip install python-pptx Pillow PyYAML lxml matplotlib latex2mathml` |
 | Chrome 或 Edge | `ppsh-soil-infographic` | `Test-Path` 這兩個路徑，**任一個 `True` 就算有**：`C:\Program Files\Google\Chrome\Application\chrome.exe`、`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe` | 有 Edge 就不用補；都沒有才 `winget install --id Google.Chrome -e --accept-source-agreements --accept-package-agreements` |
+| Node.js 22 以上 | `ppsh-clasp`（20 以上即可）、`ppsh-soil-motion-deck` | `node --version` | `winget install --id OpenJS.NodeJS.LTS -e --accept-source-agreements --accept-package-agreements` |
+| ffmpeg | `ppsh-soil-motion-deck` | `ffmpeg -version` | `winget install --id Gyan.FFmpeg -e --accept-source-agreements --accept-package-agreements` |
+| HyperFrames（含官方 skills） | `ppsh-soil-motion-deck` | `hyperframes --version` | `npm install -g hyperframes`，再 `hyperframes skills update` 與 `hyperframes skills update faceless-explainer` |
+| edge-tts、fonttools、brotli | `ppsh-soil-motion-deck`（旁白、字型瘦身） | `python -X utf8 -c "import importlib.util as u; [print(m, 'OK' if u.find_spec(m) else '缺') for m in ['edge_tts','fontTools','brotli']]"` | `python -X utf8 -m pip install edge-tts fonttools brotli` |
 | uv ＋ MarkItDown | `ppsh-office-reader` | `markitdown --version`；失敗再看 `uv --version` | `winget install --id astral-sh.uv -e --accept-source-agreements --accept-package-agreements`，再 `uv tool install "markitdown[pdf,docx,pptx,xlsx]"` |
 
 容易踩的坑：
 
 - **`python` 跳出 Microsoft Store 或沒反應**＝Windows 的市集空殼，不是真的 Python。看 `py -0p`：有版本就把上表的 `python` 全部換成 `py -3.13`（換成列出的版本）；沒有才安裝。
 - **不要用 `where.exe chrome` 判斷瀏覽器**，瀏覽器通常不在 PATH 裡。
+- **`npm install -g` 在 PowerShell 回「已停用指令碼執行」**：改用 `npm.cmd`、`hyperframes.cmd`。
+- `ppsh-clasp` 第一次使用時才登入 Google，**安裝階段不要執行 `clasp login`**。
 - **Python 3.14 以上**：套件可能要現場編譯，會跑好幾分鐘，先告訴老師「正常，請等」。
 - **剛用 winget 裝好的 Python／uv，這個對話還叫不到**（PATH 要重開才更新）。這時直接結束並請老師重開、再貼一次同一段話；重跑時已完成的步驟會檢查通過自動跳過。
 - 更完整的說明與疑難排解：[基本功懶人包](https://github.com/frentexx/ppsh-agent-basics-packs) 的 00（環境）、01（MarkItDown）、03（產出技能）。
@@ -160,10 +176,12 @@ foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-r
 
 | 項目 | 結果 |
 |---|---|
-| 7 個技能 | ✅ 全部裝好／❌ 缺哪幾個 |
+| 10 個技能＋3 個輔助技能 | ✅ 全部裝好／❌ 缺哪幾個 |
 | Python（做簡報、圖卡用） | ✅ 版本／❌ |
 | 瀏覽器（做圖卡用） | ✅ Chrome 或 Edge／❌ |
 | Office 讀取工具 | ✅／❌ |
+| Node.js（網頁應用程式、影片用） | ✅ 版本／❌ |
+| 影片工具（ffmpeg、HyperFrames、edge-tts） | ✅／❌ 缺哪個 |
 
 最後一定要明確告訴老師下一步，例如：
 「請把 Codex（或 Claude Code）**整個關掉再打開**，然後問我：『你有哪些 ppsh 開頭的技能？』」
@@ -188,6 +206,10 @@ MIT License。架構參考 [mathruffian-dot/codex-lazy-packs](https://github.com
 |---|---|---|
 | `ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-image-deck` | 改作自 [mathruffian-dot/soil-deck-skills](https://github.com/mathruffian-dot/soil-deck-skills)（MIT，© 2026 mathruffian-dot），原作授權全文附於各技能資料夾的 `LICENSE` | 生圖改為選用並支援無金鑰時改走向量版面、生圖改走 Gemini（image-deck 改為 Codex 內建生圖優先、沒有才走 Gemini）、移除寫死的本機路徑、幾何圖改用 Chrome 渲染、html-deck 拿掉頁數限制並改為投影可讀字級、加研習版須知 |
 | `ppsh-soil-html-deck` 的 `references/firebase-interact.md` | 移植自 [mathruffian-dot/claude-html-slide-builder](https://github.com/mathruffian-dot/claude-html-slide-builder)（MIT） | — |
+| `ppsh-soil-motion-deck` | 改作自 [mathruffian-dot/soil-motion-deck](https://github.com/mathruffian-dot/soil-motion-deck)（MIT），原作授權與第三方聲明附於技能資料夾 | 改指向本包的 `ppsh-soil-teaching-deck`、加研習版須知（已有簡報只做影片、精簡模式、旁白不放個資） |
+| `motion-explainer`、`motion-design`、`review-loop` | 原樣收錄自 [mathruffian-dot/claude-motion-explainer](https://github.com/mathruffian-dot/claude-motion-explainer)（MIT；後兩者改編自 whaleyxbt/claude-motion，MIT） | — |
+| `ppsh-clasp` | 改作自 [mathruffian-dot/clasp-gas-skill](https://github.com/mathruffian-dot/clasp-gas-skill)（MIT） | 改為先用學校帳號、被擋才換個人帳號；個資只放學校帳號、公開頁面姓名在後端遮罩 |
+| `ppsh-rdq` | 收錄自 [mathruffian-dot/rdq-skill](https://github.com/mathruffian-dot/rdq-skill)（MIT） | 只改技能名稱 |
 | `ppsh-soil-infographic`、`ppsh-draw` 及其餘技能 | 本校自編 | — |
 
 SOIL 教學簡報設計邏輯出自李俊儀教授的 SOIL Teaching Deck Workflow。
