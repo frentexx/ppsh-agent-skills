@@ -5,24 +5,35 @@ description: 讀取 Office 與 PDF 文件 — 把 PDF、Word（docx）、PowerPo
 
 # 讀取 Office 與 PDF 文件（屏北高中版）
 
-AI 不能直接「看懂」Word、PowerPoint、Excel 的檔案格式。這個技能先用 **MarkItDown**（微軟開源的轉檔工具）把檔案轉成純文字，再交給你閱讀。
+AI 不能直接「看懂」Word、PowerPoint、Excel 的檔案格式。這個技能先把檔案轉成純文字，再交給你閱讀。轉檔工具有兩個，**依檔案類型挑**：
 
-| 檔案 | 可以讀 | 讀不到 |
-|---|---|---|
-| PDF（文字版） | 內文 | 掃描版 PDF 的文字（那其實是圖片） |
-| Word `.docx` | 內文、表格 | 文字方塊內的部分排版 |
-| PowerPoint `.pptx` | 每頁文字、備忘稿 | 圖片裡的字 |
-| Excel `.xlsx` | 每個工作表的**儲存格值** | **公式本身**（只看得到算出來的結果） |
-| 舊格式 `.doc` `.ppt` `.xls` | — | 請老師先用 Office 另存成新格式 |
+| 檔案 | 先用 | 第一個失敗時改用 | 讀不到 |
+|---|---|---|---|
+| Word `.docx`、舊版 `.doc`、`.odt`、`.rtf` | **anydoc** | MarkItDown（只限 `.docx`） | 文字方塊內的部分排版 |
+| PowerPoint `.pptx`、舊版 `.ppt` | **anydoc** | MarkItDown（只限 `.pptx`） | 圖片裡的字 |
+| PDF（文字版） | **MarkItDown** | anydoc | 掃描版 PDF 的文字（那其實是圖片） |
+| Excel `.xlsx` | **MarkItDown** | — | **公式本身**（只看得到算出來的結果） |
+| 舊版 `.xls` | — | — | 請老師先用 Excel 另存成 `.xlsx` |
+
+**為什麼 Word 要先用 anydoc**：計畫書、經費表常有合併儲存格。MarkItDown 遇到合併儲存格會**少算一欄**，後面的金額全部往左錯一格；儲存格裡的分行也會被接成同一行（本校國教署計畫書實測）。anydoc 會保留空欄位與分行。
 
 ## 1. 確認工具在不在
 
 ```powershell
+anydoc --version
 markitdown --version
 ```
 
-- **有顯示版本號**（例：`markitdown 0.1.7`）→ 繼續第 2 步。
-- **找不到指令** → 先檢查 `uv --version`：
+**anydoc 找不到指令** → 先檢查 `node --version`：
+- 有版本號（20 以上）→ **先把下面這行指令給老師看、經同意後**再執行：
+  ```powershell
+  npm install -g @firecrawl/anydoc
+  ```
+  PowerShell 回「已停用指令碼執行」→ 改用 `npm.cmd install -g @firecrawl/anydoc`，並改用 `anydoc.cmd` 執行。
+- 沒有 Node.js → 這次先只用 MarkItDown 讀，並告訴老師：「合併儲存格多的表格可能錯欄，數字請對照原檔。」
+
+**MarkItDown 有顯示版本號**（例：`markitdown 0.1.7`）→ 繼續第 2 步。
+**MarkItDown 找不到指令** → 先檢查 `uv --version`：
   - 有 uv → **先把下面這行指令給老師看、經同意後**再執行：
     ```powershell
     uv tool install "markitdown[pdf,docx,pptx,xlsx]"
@@ -36,6 +47,9 @@ markitdown --version
 
 ```powershell
 New-Item -ItemType Directory -Force "_轉文字" | Out-Null
+# Word、PowerPoint：
+anydoc "<原始檔案完整路徑>" -o "_轉文字\<原檔名>.md"
+# PDF、Excel：
 markitdown "<原始檔案完整路徑>" -o "_轉文字\<原檔名>.md"
 ```
 
@@ -43,11 +57,14 @@ macOS／Linux：
 
 ```bash
 mkdir -p _轉文字
-markitdown "<原始檔案完整路徑>" -o "_轉文字/<原檔名>.md"
+anydoc "<原始檔案完整路徑>" -o "_轉文字/<原檔名>.md"      # Word、PowerPoint
+markitdown "<原始檔案完整路徑>" -o "_轉文字/<原檔名>.md"  # PDF、Excel
 ```
 
 - 路徑有空格或中文，一定要用雙引號包起來。
 - **絕對不要覆蓋或修改原始檔案。**
+- **anydoc 絕對不要加 `--ocr hosted`**：這個選項會把整份檔案上傳到外部雲端服務（Firecrawl）做文字辨識。公文、計畫書、學生資料一律不准。
+- anydoc 結束碼是 `3`＝這是掃描檔、需要 OCR，照第 5 節處理，不要改用 `--ocr hosted`。
 
 ## 3. 讀轉出來的文字
 
@@ -84,6 +101,7 @@ markitdown "<原始檔案完整路徑>" -o "_轉文字/<原檔名>.md"
 
 ## 相關技能
 
+- 要寫成 Word 檔：`ppsh-word-writer`
 - 初始化：`ppsh-project-init`
 - 開工：`ppsh-startup`
 - 收工：`ppsh-shutdown`

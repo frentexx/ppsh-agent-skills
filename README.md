@@ -20,7 +20,8 @@
 | `ppsh-project-init` | 「初始化專案」 | 建立 `AGENTS.md`（專案藍圖）與 `handoff.md`（交接檔），並放一行 `@AGENTS.md` 的 `CLAUDE.md` 讓 Claude Code 自動讀藍圖 | A5 |
 | `ppsh-startup` | 「開工」 | 讀兩份檔案，回報上次做到哪、下一步 | A5 |
 | `ppsh-shutdown` | 「收工」 | 把今天進度寫進交接檔，提醒雲端硬碟同步 | A5 |
-| `ppsh-office-reader` | 「幫我讀這份 Word／PDF／簡報／Excel」 | 把檔案轉成文字再閱讀，不改原檔 | A3、A4 |
+| `ppsh-office-reader` | 「幫我讀這份 Word／PDF／簡報／Excel」 | 把檔案轉成文字再閱讀，不改原檔（Word、簡報用 anydoc，表格不錯欄） | A3、A4 |
+| `ppsh-word-writer` | 「寫成 Word」「產出 docx」 | 新建 Word 檔；改既有文件時給「修訂對照表」讓你自己貼，原檔不動 | A3、A4 |
 
 ### 產出技能（速成版 S2 使用）
 
@@ -78,7 +79,7 @@
 全部做完後，用一張簡單的表告訴我結果，以及我接下來要做什麼。
 ```
 
-**怎麼確認裝好了**：重開後問它「**你有哪些 ppsh 開頭的技能？**」，列得出 10 個就成功了（另外還會看到 `motion-explainer`、`motion-design`、`review-loop` 三個輔助技能）。
+**怎麼確認裝好了**：重開後問它「**你有哪些 ppsh 開頭的技能？**」，列得出 11 個就成功了（另外還會看到 `motion-explainer`、`motion-design`、`review-loop` 三個輔助技能）。
 
 **裝到一半失敗**：不用自己修。把 AI 最後給你的結果表**截圖給研習講師**。
 （中途被要求重開也沒關係，重開後**再貼一次同一段話**，已經裝好的會自動跳過。）
@@ -94,9 +95,9 @@
 > - 某一步失敗就停在那一步，用白話說明卡在哪；**不要換成本文件以外的方法硬裝**。
 > - 可以重複執行：已經裝好的項目檢查通過就跳過，不要重裝。
 
-### 要裝的技能（13 個資料夾）
+### 要裝的技能（14 個資料夾）
 
-`ppsh-project-init`、`ppsh-startup`、`ppsh-shutdown`、`ppsh-office-reader`、`ppsh-soil-infographic`、`ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-motion-deck`、`motion-explainer`、`motion-design`、`review-loop`、`ppsh-clasp`、`ppsh-rdq`
+`ppsh-project-init`、`ppsh-startup`、`ppsh-shutdown`、`ppsh-office-reader`、`ppsh-word-writer`、`ppsh-soil-infographic`、`ppsh-soil-teaching-deck`、`ppsh-soil-html-deck`、`ppsh-soil-motion-deck`、`motion-explainer`、`motion-design`、`review-loop`、`ppsh-clasp`、`ppsh-rdq`
 
 **不要裝** `ppsh-soil-image-deck`、`ppsh-draw`（附錄技能，要老師明確指名才裝）。
 
@@ -115,7 +116,7 @@
 **路線 A（`node --version` 有版本號時優先用）：**
 
 ```powershell
-npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck ppsh-soil-motion-deck motion-explainer motion-design review-loop ppsh-clasp ppsh-rdq -a <codex 或 claude-code> -g -y --copy
+npx skills add frentexx/ppsh-agent-skills -s ppsh-project-init ppsh-startup ppsh-shutdown ppsh-office-reader ppsh-word-writer ppsh-soil-infographic ppsh-soil-teaching-deck ppsh-soil-html-deck ppsh-soil-motion-deck motion-explainer motion-design review-loop ppsh-clasp ppsh-rdq -a <codex 或 claude-code> -g -y --copy
 ```
 
 PowerShell 回「因為這個系統上已停用指令碼執行」→ 把 `npx` 改成 `npx.cmd` 重跑。
@@ -128,7 +129,7 @@ Invoke-WebRequest "https://github.com/frentexx/ppsh-agent-skills/archive/refs/he
 Expand-Archive "$tmp.zip" -DestinationPath $tmp -Force
 $dst = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
 New-Item -ItemType Directory -Force $dst | Out-Null
-foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-word-writer','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
   Copy-Item "$tmp\ppsh-agent-skills-main\skills\$s" $dst -Recurse -Force
 }
 ```
@@ -139,13 +140,13 @@ macOS 用 `curl -L -o` 下載、`unzip` 解壓，再 `cp -R` 到上表的資料�
 
 ```powershell
 $dir = "$env:USERPROFILE\.agents\skills"   # Claude Code 改成 "$env:USERPROFILE\.claude\skills"
-foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
+foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-reader','ppsh-word-writer','ppsh-soil-infographic','ppsh-soil-teaching-deck','ppsh-soil-html-deck','ppsh-soil-motion-deck','motion-explainer','motion-design','review-loop','ppsh-clasp','ppsh-rdq') {
   "{0,-26} {1}" -f $s, (Test-Path "$dir\$s\SKILL.md")
 }
 "render.py                  {0}" -f (Test-Path "$dir\ppsh-soil-infographic\render.py")
 ```
 
-14 行都要是 `True`。
+15 行都要是 `True`。
 
 ### 步驟 4：補齊執行環境
 
@@ -160,13 +161,16 @@ foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-r
 | ffmpeg | `ppsh-soil-motion-deck` | `ffmpeg -version` | `winget install --id Gyan.FFmpeg -e --accept-source-agreements --accept-package-agreements` |
 | HyperFrames（含官方 skills） | `ppsh-soil-motion-deck` | `hyperframes --version` | `npm install -g hyperframes`，再 `hyperframes skills update` 與 `hyperframes skills update faceless-explainer` |
 | edge-tts、fonttools、brotli | `ppsh-soil-motion-deck`（旁白、字型瘦身） | `python -X utf8 -c "import importlib.util as u; [print(m, 'OK' if u.find_spec(m) else '缺') for m in ['edge_tts','fontTools','brotli']]"` | `python -X utf8 -m pip install edge-tts fonttools brotli` |
-| uv ＋ MarkItDown | `ppsh-office-reader` | `markitdown --version`；失敗再看 `uv --version` | `winget install --id astral-sh.uv -e --accept-source-agreements --accept-package-agreements`，再 `uv tool install "markitdown[pdf,docx,pptx,xlsx]"` |
+| uv ＋ MarkItDown | `ppsh-office-reader`（PDF、Excel） | `markitdown --version`；失敗再看 `uv --version` | `winget install --id astral-sh.uv -e --accept-source-agreements --accept-package-agreements`，再 `uv tool install "markitdown[pdf,docx,pptx,xlsx]"` |
+| anydoc | `ppsh-office-reader`（Word、簡報，含舊版 .doc／.ppt） | `anydoc --version` | 先確認上面的 Node.js 已裝好，再 `npm install -g @firecrawl/anydoc` |
+| python-docx、openpyxl | `ppsh-word-writer`（寫 Word）、評分表 Excel | `python -X utf8 -c "import importlib.util as u; [print(m, 'OK' if u.find_spec(m) else '缺') for m in ['docx','openpyxl']]"` | `python -X utf8 -m pip install python-docx openpyxl` |
 
 容易踩的坑：
 
 - **`python` 跳出 Microsoft Store 或沒反應**＝Windows 的市集空殼，不是真的 Python。看 `py -0p`：有版本就把上表的 `python` 全部換成 `py -3.13`（換成列出的版本）；沒有才安裝。
 - **不要用 `where.exe chrome` 判斷瀏覽器**，瀏覽器通常不在 PATH 裡。
-- **`npm install -g` 在 PowerShell 回「已停用指令碼執行」**：改用 `npm.cmd`、`hyperframes.cmd`。
+- **`npm install -g` 在 PowerShell 回「已停用指令碼執行」**：改用 `npm.cmd`、`hyperframes.cmd`、`anydoc.cmd`。
+- **anydoc 不要加 `--ocr hosted`**：那會把檔案上傳到外部雲端服務。安裝階段只需要確認 `anydoc --version` 有版本號。
 - `ppsh-clasp` 第一次使用時才登入 Google，**安裝階段不要執行 `clasp login`**。
 - **Python 3.14 以上**：套件可能要現場編譯，會跑好幾分鐘，先告訴老師「正常，請等」。
 - **剛用 winget 裝好的 Python／uv，這個對話還叫不到**（PATH 要重開才更新）。這時直接結束並請老師重開、再貼一次同一段話；重跑時已完成的步驟會檢查通過自動跳過。
@@ -178,10 +182,10 @@ foreach ($s in 'ppsh-project-init','ppsh-startup','ppsh-shutdown','ppsh-office-r
 
 | 項目 | 結果 |
 |---|---|
-| 10 個技能＋3 個輔助技能 | ✅ 全部裝好／❌ 缺哪幾個 |
+| 11 個技能＋3 個輔助技能 | ✅ 全部裝好／❌ 缺哪幾個 |
 | Python（做簡報、圖卡用） | ✅ 版本／❌ |
 | 瀏覽器（做圖卡用） | ✅ Chrome 或 Edge／❌ |
-| Office 讀取工具 | ✅／❌ |
+| Office 讀寫工具（MarkItDown、anydoc、python-docx） | ✅／❌ 缺哪個 |
 | Node.js（網頁應用程式、影片用） | ✅ 版本／❌ |
 | 影片工具（ffmpeg、HyperFrames、edge-tts） | ✅／❌ 缺哪個 |
 
